@@ -7,10 +7,4 @@ export default defineConfig({
   server: {
     open: true,
   },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: "src/setupTests",
-    mockReset: true,
-  },
 })
