@@ -28,7 +28,7 @@
     }
 
     &.enabled {
-      background-color: #d3e3fd
+      background-color: #d3e3fd;
     }
 
     &.bold {

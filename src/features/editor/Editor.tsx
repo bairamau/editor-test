@@ -1,4 +1,3 @@
-import { useState } from "react"
 import "./Editor.css"
 import {
   toggleBold,
