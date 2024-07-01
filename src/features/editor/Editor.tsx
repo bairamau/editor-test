@@ -11,23 +11,49 @@ import {
 } from "./editorSlice"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { clsx } from "../../utils"
+import { useEffect, useRef, useState } from "react"
+
+const debounce = (f: any, delay: number) => {
+  let timer: number | null = null
+  return (...args: any[]) => {
+    if (timer !== null) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      f(...args)
+      timer = null
+    }, delay)
+  }
+}
 
 export const Editor = () => {
   const dispatch = useAppDispatch()
   const isFirstStep = useAppSelector(selectIsFirstStep)
   const isLastStep = useAppSelector(selectIsLastStep)
   const currentEditor = useAppSelector(selectCurrentEditor)
+  const [text, setText] = useState(currentEditor.text)
+
+  const textUpdateRef = useRef(
+    debounce((text: string) => dispatch(updateText(text)), 500),
+  )
+
+  const changeHandler = e => {
+    setText(e.target.value)
+    textUpdateRef.current(e.target.value)
+  }
+
+  useEffect(() => {
+    setText(currentEditor.text)
+  }, [currentEditor.text])
 
   return (
     <div className="editor">
       <textarea
-        value={currentEditor.text}
+        value={text}
+        onChange={changeHandler}
         style={{
           fontStyle: currentEditor.italic ? "italic" : "normal",
           fontWeight: currentEditor.bold ? 700 : 400,
-        }}
-        onChange={e => {
-          dispatch(updateText(e.target.value))
         }}
       ></textarea>
       <button
