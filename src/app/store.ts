@@ -1,6 +1,10 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit"
 import { combineSlices, configureStore } from "@reduxjs/toolkit"
-import { editorSlice, sessionMiddleware } from "../features/editor/editorSlice"
+import {
+  debouncedUpdateTextMiddleware,
+  editorSlice,
+  sessionMiddleware,
+} from "../features/editor/editorSlice"
 
 const rootReducer = combineSlices(editorSlice)
 
@@ -11,7 +15,10 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
     reducer: rootReducer,
     preloadedState,
     middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().prepend(sessionMiddleware.middleware),
+      getDefaultMiddleware().prepend(
+        sessionMiddleware.middleware,
+        debouncedUpdateTextMiddleware.middleware,
+      ),
   })
   return store
 }

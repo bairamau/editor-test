@@ -2,32 +2,39 @@ import "./Editor.css"
 import {
   toggleBold,
   toggleItalic,
-  updateText,
   setNextStep,
   setPreviousStep,
   selectCurrentEditor,
   selectIsFirstStep,
   selectIsLastStep,
+  inputText,
 } from "./editorSlice"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { clsx } from "../../utils"
+import { useEffect, useState } from "react"
 
 export const Editor = () => {
   const dispatch = useAppDispatch()
   const isFirstStep = useAppSelector(selectIsFirstStep)
   const isLastStep = useAppSelector(selectIsLastStep)
   const currentEditor = useAppSelector(selectCurrentEditor)
+  const [text, setText] = useState(currentEditor.text)
+
+  useEffect(() => {
+    setText(currentEditor.text)
+  }, [currentEditor.text])
 
   return (
     <div className="editor">
       <textarea
-        value={currentEditor.text}
+        value={text}
         style={{
           fontStyle: currentEditor.italic ? "italic" : "normal",
           fontWeight: currentEditor.bold ? 700 : 400,
         }}
         onChange={e => {
-          dispatch(updateText(e.target.value))
+          setText(e.target.value)
+          dispatch(inputText(e.target.value))
         }}
       ></textarea>
       <button
